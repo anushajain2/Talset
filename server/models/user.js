@@ -26,10 +26,12 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     projects : {
-        type: Object
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project"
     },
     ratings : {
-        type: Object
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Rating"
     }
 });
 
