@@ -14,3 +14,4 @@ mongoose.connection.once("open", function() {
 
 module.exports.User = require("../models/user");
 module.exports.Project = require("../models/project");
+module.exports.Rating = require("../models/rating");
