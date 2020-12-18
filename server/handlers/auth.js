@@ -1,5 +1,6 @@
 const User = require("../config/db").User;
 const jwt = require("jsonwebtoken");
+const validator = require("email-validator");
 
 exports.signin = async function(req, res, next) {
     // finding a user
@@ -36,6 +37,12 @@ exports.signin = async function(req, res, next) {
 };
 
 exports.signup = async function(req, res, next) {
+    if(!validator.validate(req.body.email)){
+        return next({
+            status: 400,
+            message: "Invalid Email"
+        });
+    }
     try {
         let user = await User.create(req.body);
         let { id, name, email } = user;

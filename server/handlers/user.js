@@ -2,9 +2,7 @@ const User = require("../config/db").User;
 
 exports.getUser = async function(req, res, next){
     try{
-        let user = await User.findOne({
-            _id:req.params.id
-        });
+        let user = await User.findById(req.params.id);
         return res.status(200).json({
             user
         });
