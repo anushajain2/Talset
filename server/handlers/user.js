@@ -11,7 +11,15 @@ exports.getUser = async function(req, res, next){
     }
 }
 exports.editUser = async function(req,res,next){
-    // TODO
+    try{
+        await User.findByIdAndUpdate(req.params.id, req.body);
+        let user = await User.findById(req.params.id).select("-password");
+        return res.status(200).json({
+            user
+        })
+    } catch (e) {
+        return next(e);
+    }
 }
 
 exports.getAllUsers = async function(req, res, next){
