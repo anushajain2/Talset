@@ -1,9 +1,9 @@
 const Project = require("../config/db").Project;
 const User = require("../config/db").User;
 
-exports.getNewProject = async function(req, res, next){} // TODO Get Random Question
+exports.generateProject = async function(req, res, next){} // TODO Get Random Question
 
-exports.saveNewProject = async function (req, res, next) {
+exports.createProject = async function (req, res, next) {
     try {
         let project = await Project.create({
             question : req.body.question,
@@ -21,7 +21,7 @@ exports.saveNewProject = async function (req, res, next) {
     }
 }
 
-exports.getAllProjects = async function (req, res, next){
+exports.getUserProjects = async function (req, res, next){
     try {
         Project.find({user: req.params.id}, function (err, projects){
             return res.status(200).json(
@@ -32,3 +32,5 @@ exports.getAllProjects = async function (req, res, next){
         return next(e);
     }
 }
+
+// All the projects of all users
