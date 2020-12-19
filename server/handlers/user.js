@@ -2,7 +2,7 @@ const User = require("../config/db").User;
 
 exports.getUser = async function(req, res, next){
     try{
-        let user = await User.findById(req.params.id);
+        let user = await User.findById(req.params.id).select("-password");
         return res.status(200).json({
             user
         });
@@ -12,4 +12,15 @@ exports.getUser = async function(req, res, next){
 }
 exports.editUser = async function(req,res,next){
     // TODO
+}
+
+exports.getAllUsers = async function(req, res, next){
+    try{
+        let users = await User.find().select("-password");  // TODO : Need to select what all to send
+        return res.status(200).json({
+            users
+        });
+    } catch (e) {
+        return next({message : "Couldn't find the users"});
+    }
 }

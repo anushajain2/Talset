@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const errorHandler = require("./server/handlers/error");
 const authRoutes = require("./server/routes/auth");
 const userRoutes = require("./server/routes/user");
+const projectRoutes = require("./server/routes/project");
 const db = require("./server/config/db");
 
 const app = express();
@@ -17,6 +18,7 @@ app.get("/", function (req,res){
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/projects", projectRoutes);
 
 
 app.use(function (req,res,next){

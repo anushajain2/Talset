@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const validator = require("email-validator");
 
 exports.signin = async function(req, res, next) {
-    // finding a user
+    // finding a User
     try {
         let user = await User.findOne({
             email: req.body.email
@@ -37,12 +37,14 @@ exports.signin = async function(req, res, next) {
 };
 
 exports.signup = async function(req, res, next) {
+    // Checking for invalid Email ID
     if(!validator.validate(req.body.email)){
         return next({
             status: 400,
             message: "Invalid Email"
         });
     }
+    // Creating new User
     try {
         let user = await User.create(req.body);
         let { id, name, email } = user;

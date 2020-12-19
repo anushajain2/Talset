@@ -29,10 +29,12 @@ const userSchema = new mongoose.Schema({
     profilePic : {
         type: String
     },
-    projects : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Project"
-    },
+    projects : [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Project"
+        }
+    ],
     ratings : {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Rating"
