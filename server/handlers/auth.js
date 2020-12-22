@@ -8,20 +8,20 @@ exports.signin = async function(req, res, next) {
         let user = await User.findOne({
             email: req.body.email
         });
-        let { id, name, email } = user;
+        let { id, username, email } = user;
         let isMatch = await user.comparePassword(req.body.password);
         if (isMatch) {
             let token = jwt.sign(
                 {
                     id,
-                    name,
+                    username,
                     email
                 },
                 process.env.SECRET_KEY
             );
             return res.status(200).json({
                 id,
-                name,
+                username,
                 email,
                 token
             });
@@ -37,6 +37,13 @@ exports.signin = async function(req, res, next) {
 };
 
 exports.signup = async function(req, res, next) {
+    // Checking for non-empty fields
+    if(!req.body.email || !req.body.username || !req.body.name || !req.body.password){
+        return next({
+            status: 400,
+            message: "Request Fields empty"
+        });
+    }
     // Checking for invalid Email ID
     if(!validator.validate(req.body.email)){
         return next({
@@ -47,18 +54,18 @@ exports.signup = async function(req, res, next) {
     // Creating new User
     try {
         let user = await User.create(req.body);
-        let { id, name, email } = user;
+        let { id, username, email } = user;
         let token = jwt.sign(
             {
                 id,
-                name,
+                username,
                 email
             },
             process.env.SECRET_KEY
         );
         return res.status(200).json({
             id,
-            name,
+            username,
             email,
             token
         });

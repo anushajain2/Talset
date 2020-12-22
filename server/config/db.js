@@ -2,17 +2,15 @@ const mongoose = require("mongoose");
 
 mongoose.set("debug", true);
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost:27017/talset", {
-    keepAlive : true,
-    useNewUrlParser : true,
-    useUnifiedTopology : true,
-    useCreateIndex : true,
-    useFindAndModify : false
-});
-mongoose.connection.once("open", function() {
-    console.log("MongoDB database connection established successfully");
-});
+
+const uri = "mongodb+srv://"+process.env.DB_USERNAME+":"+process.env.DB_PASSWORD+"@cluster0.frcnf.mongodb.net/"+process.env.DB_DBNAME+"?retryWrites=true&w=majority";
+mongoose.connect(uri, {
+    keepAlive: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+}).then(r => console.log("MongoDB database connection established successfully"));
 
 module.exports.User = require("../models/user");
-module.exports.Project = require("../models/project");
-module.exports.Rating = require("../models/rating");
+module.exports.Post = require("../models/post");

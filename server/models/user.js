@@ -20,25 +20,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    currentTitle : {
-        type: String
-    },
-    experience : {
-        type: Object
-    },
     profilePic : {
         type: String
     },
-    projects : [
+    uploadedPosts : [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Project"
+            ref: "Post"
         }
     ],
-    ratings : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Rating"
-    }
+    watchedPosts : [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post"
+        }
+    ]
 });
 
 userSchema.pre("save", async function(next) {

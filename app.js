@@ -5,10 +5,21 @@ const bodyParser = require("body-parser");
 const errorHandler = require("./server/handlers/error");
 const authRoutes = require("./server/routes/auth");
 const userRoutes = require("./server/routes/user");
-const projectRoutes = require("./server/routes/project");
+const postRoutes = require("./server/routes/post");
 const db = require("./server/config/db");
+const ffmpeg = require("ffmpeg");
+const cloudinary = require("cloudinary").v2;
+const {fileUploadMiddleware} = require("./server/middleware/upload");
 
 const app = express();
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_KEY,
+    api_secret: process.env.CLOUD_SECRET,
+});
+
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -18,7 +29,7 @@ app.get("/", function (req,res){
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/projects", projectRoutes);
+app.use("/api/post", postRoutes);
 
 
 app.use(function (req,res,next){
