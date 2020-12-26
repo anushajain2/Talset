@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
             ref: "Post"
         }
     ]
+    // bookmarks
 });
 
 userSchema.pre("save", async function(next) {

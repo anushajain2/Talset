@@ -18,20 +18,22 @@ const postSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    likes : {
-        type: Number,
-        default: 0
-    },
+    likes : [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            unique: "true"
+        }
+    ],
     comments : [
         {
-            comment : {
-                type: String
-            },
-            by : {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User"
-            }
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Comment"
         }
+        // replies
+        // liking comment
+        // day and time
+        // starting from where video stopped
     ]
 
 });

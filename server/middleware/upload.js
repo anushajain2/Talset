@@ -11,10 +11,6 @@ cloudinary.config({
     api_secret: process.env.CLOUD_SECRET,
 });
 
-// let cld_upload_stream = cloudinary.uploader.upload_stream((result) => {
-//     console.log(result);
-// });
-
 exports.fileUploadMiddleware= async function (req, res, next) {
     if (req.file){
         try{
@@ -22,10 +18,11 @@ exports.fileUploadMiddleware= async function (req, res, next) {
             let process = new ffmpeg("./"+req.file.path);
             process.then(function (video) {
                 console.log("in");
+                let newName = req.body.title.split(" ").join("_");
 
                 video
                     .setVideoSize('640x480', true, true, '#ffffff')
-                    .save(`./newFiles/new.mp4`, function (error, file) {
+                    .save(`./newFiles/${newName}.mp4`, function (error, file) {
                         //console.log(error);
                         if (!error){
                             console.log('Video file: ' + file);
@@ -65,6 +62,7 @@ exports.fileUploadMiddleware= async function (req, res, next) {
 
             }, function (err) {
                 console.log('Error: ' + err);
+                return next(err);
             });
         } catch (e) {
             console.log(e.code);
