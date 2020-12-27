@@ -36,6 +36,8 @@ const userSchema = new mongoose.Schema({
         }
     ]
     // bookmarks
+    // followers
+    // following
 });
 
 userSchema.pre("save", async function(next) {

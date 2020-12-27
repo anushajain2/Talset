@@ -6,6 +6,7 @@ const errorHandler = require("./server/handlers/error");
 const authRoutes = require("./server/routes/auth");
 const userRoutes = require("./server/routes/user");
 const postRoutes = require("./server/routes/post");
+const commentRoutes = require("./server/routes/comment");
 const db = require("./server/config/db");
 const ffmpeg = require("ffmpeg");
 const cloudinary = require("cloudinary").v2;
@@ -30,7 +31,7 @@ app.get("/", function (req,res){
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
-
+app.use("/api/comment", commentRoutes);
 
 app.use(function (req,res,next){
     let err = new Error("Not Found");

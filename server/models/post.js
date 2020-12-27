@@ -34,6 +34,8 @@ const postSchema = new mongoose.Schema({
         // liking comment
         // day and time
         // starting from where video stopped
+        // bookmarks
+        // watch later
     ]
 
 });
