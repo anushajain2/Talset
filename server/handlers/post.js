@@ -11,15 +11,15 @@ exports.getAllPosts = async function (req,res,next){
     }
 }
 
-exports.getUserPosts = async function (req,res,next){
-    try{
-        await Post.find({by:req.params.id}, function (err,docs) {
+exports.getUserPosts = async function (req, res, next) {
+    try {
+        await Post.find({by: req.params.id}, function (err, docs) {
             return res.status(200).json(docs);
         });
     } catch (e) {
         return next(e);
     }
-}
+};
 
 exports.likePosts = async function (req,res,next){
     try{

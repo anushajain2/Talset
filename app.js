@@ -20,7 +20,7 @@ cloudinary.config({
     api_secret: process.env.CLOUD_SECRET,
 });
 
-app.use(cors());
+//app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -43,4 +43,14 @@ app.use(errorHandler);
 
 app.listen(5000, function (){
     console.log("Server is running on port 5000");
+});
+
+app.on("uncaughtException", function () {
+    console.log("Crashed");
+    app.close();
+});
+
+app.on("SIGTERM",function () {
+    console.log("Kill");
+    app.close();
 });

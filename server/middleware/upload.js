@@ -34,10 +34,19 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                 }
                                 else{
                                     try{
+                                        let date = new Date();
                                         let post = await Post.create({
                                             title: req.body.title,
                                             by: req.params.id,
-                                            videoURL: result.secure_url
+                                            videoURL: result.secure_url,
+                                            timestamp : {
+                                                date : date.getDate(),
+                                                month : date.getMonth(),
+                                                year : date.getFullYear(),
+                                                hours : date.getHours(),
+                                                mins : date.getMinutes(),
+                                                secs : date.getSeconds()
+                                            }
                                         });
                                         let {id} =post;
                                         await User.findByIdAndUpdate(req.params.id, {$push: {uploadedPosts: id}});

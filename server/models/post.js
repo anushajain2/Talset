@@ -36,7 +36,27 @@ const postSchema = new mongoose.Schema({
         // starting from where video stopped
         // bookmarks
         // watch later
-    ]
+    ],
+    timestamp : {
+        date : {
+            type : Number
+        },
+        month : {
+            type : Number
+        },
+        year : {
+            type : Number
+        },
+        hours : {
+            type : Number
+        },
+        mins : {
+            type : Number
+        },
+        secs : {
+            type : Number
+        }
+    }
 
 });
 
