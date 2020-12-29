@@ -36,6 +36,10 @@ const postSchema = new mongoose.Schema({
         // starting from where video stopped
         // bookmarks
         // watch later
+        // Comments linking
+        // pics upload
+        // skill and subtopic - new model
+        // skill learnt - post and user
     ],
     timestamp : {
         date : {
