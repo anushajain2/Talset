@@ -74,6 +74,10 @@ const userSchema = new mongoose.Schema({
     // bookmarks
     // followers
     // following
+    // skill learnt
+    // skill array progress
+    // subtopic
+
 });
 
 userSchema.pre("save", async function(next) {

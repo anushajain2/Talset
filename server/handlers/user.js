@@ -84,6 +84,7 @@ exports.putPostProgress = async function (req,res,next) {
             user.inProgressPosts[index].position = req.body.position;
             await user.save();
         }
+        return res.status(200).json({position : req.body.position});
     } catch (e) {
         return next(e);
     }

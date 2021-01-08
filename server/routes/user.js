@@ -12,4 +12,5 @@ router.post("/follow/:id/:followid", loginRequired, ensureCorrectUser, follow);
 router.get("/progress/:id/:postid", loginRequired, ensureCorrectUser, getPostProgress);
 router.post("/progress/:id/:postid", loginRequired, ensureCorrectUser, putPostProgress);
 
+// pushing skill learnt, skill and subtopic after user watches a post
 module.exports = router;

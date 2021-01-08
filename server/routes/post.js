@@ -8,20 +8,22 @@ const {getAllPosts, getUserPosts, likePosts} = require("../handlers/post");
 const storage = multer.diskStorage({
     destination: './files',
     filename(req, file, cb) {
-        let newName = file.originalname.split(" ").join("_");
+        let newName = Date.now()+ '-' +file.originalname;
+        newName = newName.split(" ").join("_");
         cb(null, newName);
     },
 });
 
 const upload = multer({ storage });
 
-router.post("/upload/:id", loginRequired, ensureCorrectUser, upload.single('file'), fileUploadMiddleware);
-router.get("/all", getAllPosts);
+router.post("/upload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileUploadMiddleware); //add skill learnt
+router.get("/all", getAllPosts);// getting  skills
 router.get("/userPosts/:id", getUserPosts);
 router.post("/like/:id", loginRequired, likePosts);
 
 // like
 // comment
 // get post comments
+//
 
 module.exports = router;

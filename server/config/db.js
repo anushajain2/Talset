@@ -15,3 +15,4 @@ mongoose.connect(uri, {
 module.exports.User = require("../models/user");
 module.exports.Post = require("../models/post");
 module.exports.Comment = require("../models/comment");
+module.exports.Skill = require("../models/skill");

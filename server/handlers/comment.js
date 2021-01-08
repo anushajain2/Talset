@@ -11,6 +11,7 @@ exports.createComment = async function (req, res, next) {
                 text : req.body.text,
                 by : decoded.id,
                 post : req.params.id,
+                isLinked: false,
                 timestamp : {
                     date : date.getDate(),
                     month : date.getMonth(),
@@ -48,8 +49,24 @@ exports.newReply = async function (req,res,next) {
     try {
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, process.env.SECRET_KEY, async function(err, decoded) {
-            Comment.findByIdAndUpdate(req.params.id, {$push :{replies : {text : req.body.text, by : decoded.id}}}, {returnOriginal: false},  function (err, docs) {
-                return res.status(200).json({docs});
+            let date = new Date();
+            const comment = new Comment({
+                text : req.body.text,
+                by : decoded.id,
+                post : req.params.id,
+                isLinked: true,
+                timestamp : {
+                    date : date.getDate(),
+                    month : date.getMonth(),
+                    year : date.getFullYear(),
+                    hours : date.getHours(),
+                    mins : date.getMinutes(),
+                    secs : date.getSeconds()
+                }
+            });
+            await comment.save();
+            Comment.findByIdAndUpdate(req.params.id, {$push :{linkedComments : {reply : comment.id}}}, {returnOriginal: false},  function (err, docs) {
+                return res.status(200).json({docs,comment});
             });
         });
 
@@ -61,7 +78,9 @@ exports.newReply = async function (req,res,next) {
 exports.getReplyAndComment = async function (req,res,next) {
     try {
         Comment.findById(req.params.id, function (err, docs) {
-            return res.status(200).json({docs});
+            Comment.find({id:{ $in: docs.linkedComments}}, function (er,doc) {
+                return res.status(200).json({docs,doc});
+            })
         });
     } catch (e) {
         return next(e);

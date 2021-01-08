@@ -10,10 +10,6 @@ const postSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    videoURL : {
-        type: String,
-        required: true
-    },
     views : {
         type: Number,
         default: 0
@@ -38,6 +34,7 @@ const postSchema = new mongoose.Schema({
         // watch later
         // Comments linking
         // pics upload
+        // multiple posts
         // skill and subtopic - new model
         // skill learnt - post and user
     ],
@@ -60,8 +57,20 @@ const postSchema = new mongoose.Schema({
         secs : {
             type : Number
         }
-    }
+    },
+    skill : {
+        // skill name
+        // some of the subtopics
+    },
+    skilllearnt :{
 
+    },// sentence
+
+    postUrl: [
+    {
+        type: String
+    }
+]
 });
 
 const Post = mongoose.model("Post", postSchema);

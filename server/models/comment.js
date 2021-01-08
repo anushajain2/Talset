@@ -54,7 +54,18 @@ const commentSchema = new mongoose.Schema({
         secs : {
             type : Number
         }
-    }
+    },
+    isLinked : {
+       type : Boolean
+    },
+    linkedComments : [
+        {
+            reply : {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Comment"
+            }
+        }
+    ]
 });
 
 const Comment = mongoose.model("Comment", commentSchema);
