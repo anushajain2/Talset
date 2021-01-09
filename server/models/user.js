@@ -66,7 +66,8 @@ const userSchema = new mongoose.Schema({
                 ref: "Post"
             },
             position : {
-                type: Number
+                type: Number,
+                required: true
             }
         }
 

@@ -2,7 +2,8 @@ const User = require("../config/db").User;
 
 exports.getUser = async function(req, res, next){
     try{
-        let user = await User.findById(req.params.id).select("-password");
+        let user = await User.findById(req.params.id).select("" +
+            "-password");
         return res.status(200).json({
             user
         });
@@ -71,20 +72,21 @@ exports.putPostProgress = async function (req,res,next) {
         function checkIfAlreadyThere(postId){
             return String(postId.post.valueOf())===req.params.postid;
         }
-        let ifFound = user.inProgressPosts.find(checkIfAlreadyThere);
+        let ifFound = await user.inProgressPosts.find(checkIfAlreadyThere);
         if(ifFound === undefined){
-            user.inProgressPosts.push({
+            console.log(req.body.position);
+            await user.inProgressPosts.push({
                 post: req.params.postid,
                 position: req.body.position
             });
             await user.save();
         }
         else {
-            let index = user.inProgressPosts.findIndex(checkIfAlreadyThere);
+            let index = await user.inProgressPosts.findIndex(checkIfAlreadyThere);
             user.inProgressPosts[index].position = req.body.position;
             await user.save();
         }
-        return res.status(200).json({position : req.body.position});
+        return res.status(200).json({message: "Successful"});
     } catch (e) {
         return next(e);
     }
@@ -96,12 +98,12 @@ exports.getPostProgress = async function (req,res,next) {
         function checkIfAlreadyThere(postId){
             return String(postId.post.valueOf())===req.params.postid;
         }
-        let ifFound = user.inProgressPosts.find(checkIfAlreadyThere);
+        let ifFound = await user.inProgressPosts.find(checkIfAlreadyThere);
         if(ifFound === undefined){
             return next({message : "No post progress found"});
         }
         else {
-            let index = user.inProgressPosts.findIndex(checkIfAlreadyThere);
+            let index = await user.inProgressPosts.findIndex(checkIfAlreadyThere);
             return res.status(200).json(user.inProgressPosts[index].position);
 
         }

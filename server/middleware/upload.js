@@ -42,7 +42,7 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                         let newName = req.files[i].filename;
 
                         await video
-                            .setVideoSize('640x480', true, true, '#ffffff')
+                            .setVideoSize('720x1280', true, true, '#000000')
                             .save(`./newFiles/${newName}.mp4`, async function (error, file) {
                                 //console.log(error);
                                 if (!error) {
