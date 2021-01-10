@@ -21,14 +21,34 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     profilePic : {
-        type: String
+        type: String,
+        default: "https://www.dpair.com/wp-content/uploads/2017/03/Facebook-Blank-Photo.jpg"
     },
-    uploadedPosts : [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Post"
-        }
-    ],
+    currentWork : {
+        type: String,
+        default: "Mention your Work Place Here"
+    },
+    bio :{
+        type: String,
+        default: "Tell More About Yourself Here"
+    },
+    learningMins : {
+        type: Number,
+        default : 0
+    },
+    streak : {
+        type: Number,
+        default : 0
+    },
+    uploadedPosts : {
+        type : [
+                    {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "Post"
+                    }
+                    ],
+        default : []
+    },
     watchedPosts : [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -47,18 +67,24 @@ const userSchema = new mongoose.Schema({
             ref: "Post"
         }
     ],
-    followers : [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-        }
-    ],
-    following : [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-        }
-    ],
+    followers : {
+        type : [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            }
+            ],
+        default : []
+    },
+    following : {
+        type : [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            }
+            ],
+        default : []
+    },
     inProgressPosts : [
         {
             post : {
@@ -71,7 +97,25 @@ const userSchema = new mongoose.Schema({
             }
         }
 
-    ]
+    ],
+    skill : {
+        type : [
+            {
+                skillName : {
+                    type: String
+                },
+                skillLearnt : [
+                    {
+                        type: String
+                    }
+                ],
+                learningMins : {
+                    type: Number
+                }
+            }
+            ],
+        default : []
+    }
     // bookmarks
     // followers
     // following

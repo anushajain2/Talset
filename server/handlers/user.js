@@ -1,4 +1,5 @@
 const User = require("../config/db").User;
+const Post = require("../config/db").Post;
 
 exports.getUser = async function(req, res, next){
     try{
@@ -106,6 +107,18 @@ exports.getPostProgress = async function (req,res,next) {
             let index = await user.inProgressPosts.findIndex(checkIfAlreadyThere);
             return res.status(200).json(user.inProgressPosts[index].position);
 
+        }
+    } catch (e) {
+        return next(e);
+    }
+}
+
+exports.watchedPost = async function (req,res,next) {
+    try{
+        const user= await User.findById(req.params.id);
+        const post = await Post.findById(req.params.postid);
+        function checkIfAlreadyThere(postId){
+            return String(postId.post.valueOf())===req.params.postid;
         }
     } catch (e) {
         return next(e);

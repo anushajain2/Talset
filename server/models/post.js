@@ -59,19 +59,22 @@ const postSchema = new mongoose.Schema({
         }
     },
     skill : {
-        // skill name
-        // some of the subtopics
+        skillName : {
+            type: String
+        },
+        skillLearnt : {
+            type: String
+        }
     },
-    skilllearnt :{
-
-    },// sentence
 
     postUrl: [
-    {
-        type: String
-    }
-]
+        {
+            type: String
+        }
+    ]
 });
+// video thumbnails
+// search
 
 const Post = mongoose.model("Post", postSchema);
 
