@@ -106,7 +106,8 @@ const userSchema = new mongoose.Schema({
                 },
                 skillLearnt : [
                     {
-                        type: String
+                        type: String,
+                        unique: true
                     }
                 ],
                 learningMins : {

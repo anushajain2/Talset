@@ -3,10 +3,13 @@ const Post = require("../config/db").Post;
 
 exports.getUser = async function(req, res, next){
     try{
-        let user = await User.findById(req.params.id).select("" +
-            "-password");
+        let user = await User.findById(req.params.id).select("-password -watchedPosts -bookmarks -watchLater -inProgressPosts");
+        let postsCount = user.uploadedPosts.length;
+        let followersCount = user.followers.length;
         return res.status(200).json({
-            user
+            user,
+            postsCount,
+            followersCount
         });
     } catch (e) {
         return next({message : "Invalid User Id"});
@@ -14,11 +17,19 @@ exports.getUser = async function(req, res, next){
 }
 exports.editUser = async function(req,res,next){
     try{
-        await User.findByIdAndUpdate(req.params.id, req.body);
-        let user = await User.findById(req.params.id).select("-password");
-        return res.status(200).json({
-            user
-        })
+        if(req.body.name && req.body.currentWork && req.body.bio){
+            await User.findByIdAndUpdate(req.params.id, {name:req.body.name, currentWork:req.body.currentWork, bio: req.body.bio});
+            let user = await User.findById(req.params.id).select("-password -watchedPosts -bookmarks -watchLater -inProgressPosts");
+            let postsCount = user.uploadedPosts.length;
+            let followersCount = user.followers.length;
+            return res.status(200).json({
+                user,
+                postsCount,
+                followersCount
+            })
+        }
+        else
+            return next({message:"Fields not correct"});
     } catch (e) {
         return next(e);
     }
@@ -117,8 +128,26 @@ exports.watchedPost = async function (req,res,next) {
     try{
         const user= await User.findById(req.params.id);
         const post = await Post.findById(req.params.postid);
-        function checkIfAlreadyThere(postId){
-            return String(postId.post.valueOf())===req.params.postid;
+        function checkIfAlreadyThere(skill){
+            return skill.skillName===post.skill.skillName;
+        }
+        let ifFound = await user.skill.find(checkIfAlreadyThere);
+        if(ifFound === undefined){
+            await user.skill.push({
+                skillName : post.skill.skillName,
+                skillLearnt : [post.skill.skillLearnt],
+                learningMins : 10
+            });
+            user.save();
+            return res.status(200).json(user);
+        }
+        else{
+            let index = await user.skill.findIndex(checkIfAlreadyThere);
+            user.skill[index].learningMins += 10;
+            user.save();
+            await user.skill[index].skillLearnt.push(post.skill.skillLearnt);
+            user.save();
+            return res.status(200).json(user);
         }
     } catch (e) {
         return next(e);

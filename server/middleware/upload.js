@@ -73,6 +73,10 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                                         hours : date.getHours(),
                                                         mins : date.getMinutes(),
                                                         secs : date.getSeconds()
+                                                    },
+                                                    skill : {
+                                                        skillName : req.body.skillName,
+                                                        skillLearnt : req.body.skillLearnt
                                                     }
                                                 });
                                                 let {id} =post;
