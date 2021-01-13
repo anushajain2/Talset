@@ -8,6 +8,7 @@ const userRoutes = require("./server/routes/user");
 const postRoutes = require("./server/routes/post");
 const commentRoutes = require("./server/routes/comment");
 const skillRoutes = require("./server/routes/skill");
+const searchRoutes = require("./server/routes/search");
 const db = require("./server/config/db");
 const ffmpeg = require("ffmpeg");
 const cloudinary = require("cloudinary").v2;
@@ -35,6 +36,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/skill", skillRoutes);
+app.use("/api/search", searchRoutes);
 
 app.use(function (req,res,next){
     let err = new Error("Not Found");

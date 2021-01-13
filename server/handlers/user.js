@@ -17,8 +17,16 @@ exports.getUser = async function(req, res, next){
 }
 exports.editUser = async function(req,res,next){
     try{
-        if(req.body.name && req.body.currentWork && req.body.bio){
-            await User.findByIdAndUpdate(req.params.id, {name:req.body.name, currentWork:req.body.currentWork, bio: req.body.bio});
+        if(req.body.name!==undefined && req.body.currentWork!==undefined && req.body.bio!==undefined){
+            let newUser = await User.findById(req.params.id);
+            //, {name:req.body.name, currentWork:req.body.currentWork, bio: req.body.bio}
+            if(req.body.name!=="")
+                newUser.name=req.body.name;
+            if(req.body.currentWork!=="")
+                newUser.currentWork=req.body.currentWork;
+            if(req.body.bio!=="")
+                newUser.bio=req.body.bio;
+            await newUser.save();
             let user = await User.findById(req.params.id).select("-password -watchedPosts -bookmarks -watchLater -inProgressPosts");
             let postsCount = user.uploadedPosts.length;
             let followersCount = user.followers.length;
