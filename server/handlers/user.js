@@ -124,7 +124,7 @@ exports.getPostProgress = async function (req,res,next) {
     }
 }
 
-exports.watchedPost = async function (req,res,next) {
+exports.postCompleted = async function (req,res,next) {
     try{
         const user= await User.findById(req.params.id);
         const post = await Post.findById(req.params.postid);

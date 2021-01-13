@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-    title : {
-        type: String,
-        required: true
-    },
     by : {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -37,6 +33,7 @@ const postSchema = new mongoose.Schema({
         // multiple posts
         // skill and subtopic - new model
         // skill learnt - post and user
+        // question -> title, options (2 or 4 with 1 correct) -> creating and getting post
     ],
     timestamp : {
         date : {
@@ -71,7 +68,20 @@ const postSchema = new mongoose.Schema({
         {
             type: String
         }
-    ]
+    ],
+    question : {
+        title : {
+            type: String
+        },
+        options : [
+            {
+                type: String
+            }
+        ],
+        correctAnswer : {
+            type: String
+        }
+    }
 });
 // video thumbnails
 // search

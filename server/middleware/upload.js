@@ -62,8 +62,16 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                             if(links.length === req.files.length){
                                                 let date = new Date();
                                                 console.log("date");
+                                                let options = [];
+                                                if(req.body.option1)
+                                                    await options.push(req.body.option1);
+                                                if(req.body.option2)
+                                                    await options.push(req.body.option2);
+                                                if(req.body.option3)
+                                                    await options.push(req.body.option3);
+                                                if(req.body.option4)
+                                                    await options.push(req.body.option4);
                                                 let post = await Post.create({
-                                                    title: req.body.title,
                                                     by: req.params.id,
                                                     postUrl: links,
                                                     timestamp : {
@@ -77,6 +85,11 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                                     skill : {
                                                         skillName : req.body.skillName,
                                                         skillLearnt : req.body.skillLearnt
+                                                    },
+                                                    question : {
+                                                        title : req.body.questionTitle,
+                                                        options: options,
+                                                        correctAnswer : options[req.body.answer-1]
                                                     }
                                                 });
                                                 let {id} =post;
@@ -125,8 +138,16 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                     if(links.length === req.files.length){
                                         let date = new Date();
                                         console.log("date");
+                                        let options = [];
+                                        if(req.body.option1)
+                                            await options.push(req.body.option1);
+                                        if(req.body.option2)
+                                            await options.push(req.body.option2);
+                                        if(req.body.option3)
+                                            await options.push(req.body.option3);
+                                        if(req.body.option4)
+                                            await options.push(req.body.option4);
                                         let post = await Post.create({
-                                            title: req.body.title,
                                             by: req.params.id,
                                             postUrl: links,
                                             timestamp : {
@@ -136,6 +157,15 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                                 hours : date.getHours(),
                                                 mins : date.getMinutes(),
                                                 secs : date.getSeconds()
+                                            },
+                                            skill : {
+                                                skillName : req.body.skillName,
+                                                skillLearnt : req.body.skillLearnt
+                                            },
+                                            question : {
+                                                title : req.body.questionTitle,
+                                                options: options,
+                                                correctAnswer : options[req.body.answer-1]
                                             }
                                         });
                                         let {id} =post;

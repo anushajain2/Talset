@@ -16,8 +16,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/upload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileUploadMiddleware); //add skill learnt
-router.get("/all", getAllPosts);// getting  skills
+router.post("/upload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileUploadMiddleware); //add skill learnt, // questions
+router.get("/all", getAllPosts);// getting  skills // questions
 router.get("/userPosts/:id", getUserPosts);
 router.post("/like/:id", loginRequired, likePosts);
 

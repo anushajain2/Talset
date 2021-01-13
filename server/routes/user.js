@@ -1,7 +1,7 @@
 const express = require("express");
 const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
 const router = express.Router();
-const { getUser, editUser, getAllUsers, bookmark, watchLater, follow, putPostProgress, getPostProgress } = require("../handlers/user");
+const { getUser, editUser, getAllUsers, bookmark, watchLater, follow, putPostProgress, getPostProgress, postCompleted } = require("../handlers/user");
 
 router.get("/profile/:id", getUser);
 router.put("/profile/:id", loginRequired, ensureCorrectUser,editUser);
@@ -11,6 +11,7 @@ router.post("/watchLater/:id/:postid", loginRequired, ensureCorrectUser, watchLa
 router.post("/follow/:id/:followid", loginRequired, ensureCorrectUser, follow);
 router.get("/progress/:id/:postid", loginRequired, ensureCorrectUser, getPostProgress);
 router.post("/progress/:id/:postid", loginRequired, ensureCorrectUser, putPostProgress);
+router.post("/addSkill/:id/:postid", loginRequired, ensureCorrectUser, postCompleted);
 
 // pushing skill learnt, skill and subtopic after user watches a post
 module.exports = router;
