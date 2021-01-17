@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const {fileUploadMiddleware} = require("../middleware/upload");
+const {fileUploadMiddleware,fileDirectUploadMiddleware} = require("../middleware/upload");
 const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
 const {getAllPosts, getUserPosts, likePosts} = require("../handlers/post");
 
@@ -17,9 +17,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post("/upload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileUploadMiddleware); //add skill learnt, // questions
+router.post("/directUpload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileDirectUploadMiddleware);
 router.get("/all", getAllPosts);// getting  skills // questions
 router.get("/userPosts/:id", getUserPosts);
-router.post("/like/:id", loginRequired, likePosts);
+router.post("/like/:id/:postid", loginRequired, ensureCorrectUser, likePosts);
 
 // like
 // comment

@@ -169,7 +169,7 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                             }
                                         });
                                         let {id} =post;
-                                        await User.findByIdAndUpdate(req.params.id, {$push: {uploadedPosts: id}});
+                                        await User.findByIdAndUpdate(req.params.id, {$push: {uploadedPosts: id}, $inc: {noOfPosts: 1}});
                                         return res.status(200).json({
                                             post
                                         });
@@ -177,6 +177,157 @@ exports.fileUploadMiddleware= async function (req, res, next) {
                                 }
                             });
                         });
+                    if (errorHappened)
+                        break;
+
+                }
+            }
+        } catch (e) {
+            return next(e);
+        }
+
+
+    } else {
+        let err = {
+            message: "Upload Failed / No file given"
+        }
+        return next(err);
+    }
+
+};
+
+exports.fileDirectUploadMiddleware= async function (req, res, next) {
+    if (req.files){
+        let isValid = true;
+        await req.files.forEach(function (file){
+            if(!isVideo(file.path) && !isImage(file.path)){
+                isValid = false;
+            }
+        });
+        if(!isValid){
+            await req.files.forEach(function (file){
+                fs.unlinkSync(file.path);
+            });
+            return next({message:"One of the files is not a valid video/image file"});
+        }
+        let errorHappened = false;
+        let errorMessage = "";
+        let links=[];
+        try{
+            for(let i=0;i<req.files.length;i++) {
+                if (isVideo(req.files[i].path)) {
+
+
+                                    await cloudinary.uploader.upload(req.files[i].path, {
+                                        resource_type: "video"
+                                    }, async function (err, result) {
+                                        if (err) {
+                                            errorHappened = true;
+                                            errorMessage = err;
+                                            throw err;
+                                        } else {
+                                            console.log("in");
+                                            await links.push(result.secure_url);
+                                            fs.unlinkSync("./" + req.files[i].path);
+                                            if(links.length === req.files.length){
+                                                let date = new Date();
+                                                console.log("date");
+                                                let options = [];
+                                                if(req.body.option1)
+                                                    await options.push(req.body.option1);
+                                                if(req.body.option2)
+                                                    await options.push(req.body.option2);
+                                                if(req.body.option3)
+                                                    await options.push(req.body.option3);
+                                                if(req.body.option4)
+                                                    await options.push(req.body.option4);
+                                                let post = await Post.create({
+                                                    by: req.params.id,
+                                                    postUrl: links,
+                                                    timestamp : {
+                                                        date : date.getDate(),
+                                                        month : date.getMonth(),
+                                                        year : date.getFullYear(),
+                                                        hours : date.getHours(),
+                                                        mins : date.getMinutes(),
+                                                        secs : date.getSeconds()
+                                                    },
+                                                    skill : {
+                                                        skillName : req.body.skillName,
+                                                        skillLearnt : req.body.skillLearnt
+                                                    },
+                                                    question : {
+                                                        title : req.body.questionTitle,
+                                                        options: options,
+                                                        correctAnswer : options[req.body.answer-1]
+                                                    }
+                                                });
+                                                let {id} =post;
+                                                await User.findByIdAndUpdate(req.params.id, {$push: {uploadedPosts: id}});
+                                                return res.status(200).json({
+                                                    post
+                                                });
+                                            }
+
+                                        }
+                                    });
+
+
+
+                    if (errorHappened)
+                        break;
+                } else if (isImage(req.files[i].path)) {
+
+                            await cloudinary.uploader.upload(req.files[i].path, async function (err, result) {
+                                if (err) {
+                                    errorHappened = true;
+                                    errorMessage = err;
+                                    throw err;
+                                } else {
+                                    console.log("in");
+                                    await links.push(result.secure_url);
+                                    fs.unlinkSync("./" + req.files[i].path);
+                                    if(links.length === req.files.length){
+                                        let date = new Date();
+                                        console.log("date");
+                                        let options = [];
+                                        if(req.body.option1)
+                                            await options.push(req.body.option1);
+                                        if(req.body.option2)
+                                            await options.push(req.body.option2);
+                                        if(req.body.option3)
+                                            await options.push(req.body.option3);
+                                        if(req.body.option4)
+                                            await options.push(req.body.option4);
+                                        let post = await Post.create({
+                                            by: req.params.id,
+                                            postUrl: links,
+                                            timestamp : {
+                                                date : date.getDate(),
+                                                month : date.getMonth(),
+                                                year : date.getFullYear(),
+                                                hours : date.getHours(),
+                                                mins : date.getMinutes(),
+                                                secs : date.getSeconds()
+                                            },
+                                            skill : {
+                                                skillName : req.body.skillName,
+                                                skillLearnt : req.body.skillLearnt
+                                            },
+                                            question : {
+                                                title : req.body.questionTitle,
+                                                options: options,
+                                                correctAnswer : options[req.body.answer-1]
+                                            }
+                                        });
+                                        let {id} =post;
+                                        await User.findByIdAndUpdate(req.params.id, {$push: {uploadedPosts: id}});
+                                        return res.status(200).json({
+                                            post
+                                        });
+                                    }
+                                }
+                            });
                     if (errorHappened)
                         break;
 

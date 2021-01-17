@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema({
                     ],
         default : []
     },
+    noOfPosts : {
+        type: Number,
+        default : 0
+    },
     watchedPosts : [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -75,6 +79,10 @@ const userSchema = new mongoose.Schema({
             }
             ],
         default : []
+    },
+    noOfFollowers : {
+        type : Number,
+        default : 0
     },
     following : {
         type : [
