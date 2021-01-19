@@ -1,7 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const ffmpeg = require("ffmpeg");
 const fs = require("fs");
-//const isImage = require('is-image');
 const sharp = require('sharp');
 const {isImage, isVideo} = require("./fileExtensions");
 

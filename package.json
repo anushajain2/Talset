@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^4.11.2",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.23.0",
@@ -22,10 +22,14 @@
     "is-image": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
+    "mime-types": "^2.1.28",
     "mongoose": "^5.11.8",
     "multer": "^1.4.2",
-    "nodemon": "^2.0.6",
+    "nodemon": "^2.0.7",
     "sharp": "^0.27.0",
     "streamifier": "^0.1.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.828.0"
   }
 }
