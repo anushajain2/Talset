@@ -16,6 +16,11 @@ const postSchema = new mongoose.Schema({
             ref: "User",
         }
     ],
+    likesTime : [
+        {
+            type: Number
+        }
+    ],
     comments : [
         {
             type: mongoose.Schema.Types.ObjectId,

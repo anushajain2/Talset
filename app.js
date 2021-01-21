@@ -9,10 +9,7 @@ const postRoutes = require("./server/routes/post");
 const commentRoutes = require("./server/routes/comment");
 const skillRoutes = require("./server/routes/skill");
 const searchRoutes = require("./server/routes/search");
-const db = require("./server/config/db");
-const ffmpeg = require("ffmpeg");
 const cloudinary = require("cloudinary").v2;
-const {fileUploadMiddleware} = require("./server/middleware/upload");
 
 const app = express();
 
@@ -27,7 +24,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", function (req,res){
+app.get("/", function (req, res) {
     res.send("hello");
 });
 
@@ -38,7 +35,7 @@ app.use("/api/comment", commentRoutes);
 app.use("/api/skill", skillRoutes);
 app.use("/api/search", searchRoutes);
 
-app.use(function (req,res,next){
+app.use(function (req, res, next) {
     let err = new Error("Not Found");
     err.status = 404;
     next(err);
@@ -46,7 +43,7 @@ app.use(function (req,res,next){
 
 app.use(errorHandler);
 
-app.listen(5000, function (){
+app.listen(5000, function () {
     console.log("Server is running on port 5000");
 });
 
@@ -55,7 +52,7 @@ app.on("uncaughtException", function () {
     app.close();
 });
 
-app.on("SIGTERM",function () {
+app.on("SIGTERM", function () {
     console.log("Kill");
     app.close();
 });

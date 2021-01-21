@@ -2,11 +2,11 @@ const User = require("../config/db").User;
 const jwt = require("jsonwebtoken");
 const validator = require("email-validator");
 
-exports.signin = async function(req, res, next) {
+exports.signin = async function (req, res, next) {
     // finding a User
     try {
         let user = await User.findOne({
-            email: req.body.email
+            email: req.body.email,
         });
         let { id, username, email } = user;
         let isMatch = await user.comparePassword(req.body.password);
@@ -15,7 +15,7 @@ exports.signin = async function(req, res, next) {
                 {
                     id,
                     username,
-                    email
+                    email,
                 },
                 process.env.SECRET_KEY
             );
@@ -23,12 +23,12 @@ exports.signin = async function(req, res, next) {
                 id,
                 username,
                 email,
-                token
+                token,
             });
         } else {
             return next({
                 status: 400,
-                message: "Invalid Email/Password."
+                message: "Invalid Email/Password.",
             });
         }
     } catch (e) {
@@ -36,19 +36,24 @@ exports.signin = async function(req, res, next) {
     }
 };
 
-exports.signup = async function(req, res, next) {
+exports.signup = async function (req, res, next) {
     // Checking for non-empty fields
-    if(!req.body.email || !req.body.username || !req.body.name || !req.body.password){
+    if (
+        !req.body.email ||
+        !req.body.username ||
+        !req.body.name ||
+        !req.body.password
+    ) {
         return next({
             status: 400,
-            message: "Request Fields empty"
+            message: "Request Fields empty",
         });
     }
     // Checking for invalid Email ID
-    if(!validator.validate(req.body.email)){
+    if (!validator.validate(req.body.email)) {
         return next({
             status: 400,
-            message: "Invalid Email"
+            message: "Invalid Email",
         });
     }
     // Creating new User
@@ -59,7 +64,7 @@ exports.signup = async function(req, res, next) {
             {
                 id,
                 username,
-                email
+                email,
             },
             process.env.SECRET_KEY
         );
@@ -67,7 +72,7 @@ exports.signup = async function(req, res, next) {
             id,
             username,
             email,
-            token
+            token,
         });
     } catch (err) {
         if (err.code === 11000) {
@@ -75,7 +80,7 @@ exports.signup = async function(req, res, next) {
         }
         return next({
             status: 400,
-            message: err.message
+            message: err.message,
         });
     }
 };
