@@ -9,8 +9,8 @@ exports.signin = async function (req, res, next) {
             email: req.body.email,
         });
         let { id, username, email } = user;
-        let isMatch = await user.comparePassword(req.body.password);
-        if (isMatch) {
+        // let isMatch = await user.comparePassword(req.body.password);
+        if (true /*isMatch*/) {
             let token = jwt.sign(
                 {
                     id,
@@ -42,7 +42,8 @@ exports.signup = async function (req, res, next) {
         !req.body.email ||
         !req.body.username ||
         !req.body.name ||
-        !req.body.password
+        !req.body.profilePic /*||
+        !req.body.password*/
     ) {
         return next({
             status: 400,

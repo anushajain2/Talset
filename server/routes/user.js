@@ -11,7 +11,7 @@ router.post("/watchLater/:id/:postid", loginRequired, ensureCorrectUser, watchLa
 router.post("/follow/:id/:followid", loginRequired, ensureCorrectUser, follow);
 router.get("/progress/:id/:postid", loginRequired, ensureCorrectUser, getPostProgress);
 router.post("/progress/:id/:postid", loginRequired, ensureCorrectUser, putPostProgress);
-router.post("/addSkill/:id/:postid", loginRequired, ensureCorrectUser, postCompleted);
-
+router.post("/postCompleted/:id/:postid", loginRequired, ensureCorrectUser, postCompleted); // remove the learning mins update postman
+// post completed
 // pushing skill learnt, skill and subtopic after user watches a post
 module.exports = router;

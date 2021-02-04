@@ -17,8 +17,7 @@ const userSchema = new mongoose.Schema({
         unique: true
     },
     password : {
-        type: String,
-        required: true
+        type: String
     },
     profilePic : {
         type: String,
@@ -117,10 +116,7 @@ const userSchema = new mongoose.Schema({
                         type: String,
                         unique: true
                     }
-                ],
-                learningMins : {
-                    type: Number
-                }
+                ]
             }
             ],
         default : []

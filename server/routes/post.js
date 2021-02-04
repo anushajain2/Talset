@@ -24,7 +24,7 @@ router.post("/directUploadS3/:id", loginRequired, ensureCorrectUser, upload.arra
 
 router.post("/upload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileUploadMiddleware); //add skill learnt, // questions
 router.post("/directUpload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileDirectUploadMiddleware);
-router.get("/all", getAllPosts);// getting  skills // questions
+router.get("/all", getAllPosts);// getting  skills // questions // username also sending //isliked
 router.get("/userPosts/:id", getUserPosts);
 router.post("/like/:id/:postid", loginRequired, ensureCorrectUser, likePosts);
 router.get("/trending", trendingPosts);

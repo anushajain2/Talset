@@ -108,6 +108,7 @@ exports.putPostProgress = async function (req,res,next) {
             user.inProgressPosts[index].position = req.body.position;
             await user.save();
         }
+        // TODO Update Learning mins for skill name
         return res.status(200).json({message: "Successful"});
     } catch (e) {
         return next(e);
@@ -145,15 +146,13 @@ exports.postCompleted = async function (req,res,next) {
         if(ifFound === undefined){
             await user.skill.push({
                 skillName : post.skill.skillName,
-                skillLearnt : [post.skill.skillLearnt],
-                learningMins : 10
+                skillLearnt : [post.skill.skillLearnt]
             });
             user.save();
             return res.status(200).json(user);
         }
         else{
             let index = await user.skill.findIndex(checkIfAlreadyThere);
-            user.skill[index].learningMins += 10;
             user.save();
             await user.skill[index].skillLearnt.push(post.skill.skillLearnt);
             user.save();
