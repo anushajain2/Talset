@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const {fileUploadMiddleware,fileDirectUploadMiddleware} = require("../middleware/upload");
 const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
-const {getAllPosts, getUserPosts, likePosts, trendingPosts} = require("../handlers/post");
+const {getAllPosts, getUserPosts, likePosts, trendingPosts} = require("../controllers/post");
 const {uploadS3, fileUploadMiddlewareS3,fileDirectUploadMiddlewareS3} =require("../middleware/uploadS3");
 
 const storage = multer.diskStorage({

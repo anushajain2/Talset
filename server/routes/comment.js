@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
-const {createComment, getAllComments, newReply, getReplyAndComment, likeComment} = require("../handlers/comment");
+const { loginRequired, ensureCorrectUser } = require("../middleware/auth");
+const {
+    createComment,
+    getAllComments,
+    newReply,
+    getReplyAndComment,
+    likeComment,
+} = require("../controllers/comment");
 
 router.post("/newComment/:id", loginRequired, createComment);
 router.get("/all/:id", getAllComments);

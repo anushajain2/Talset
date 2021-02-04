@@ -1,7 +1,7 @@
 const express = require("express");
 const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
 const router = express.Router();
-const { getUser, editUser, getAllUsers, bookmark, watchLater, follow, putPostProgress, getPostProgress, postCompleted } = require("../handlers/user");
+const { getUser, editUser, getAllUsers, bookmark, watchLater, follow, putPostProgress, getPostProgress, postCompleted } = require("../controllers/user");
 
 router.get("/profile/:id", getUser);
 router.put("/profile/:id", loginRequired, ensureCorrectUser,editUser);

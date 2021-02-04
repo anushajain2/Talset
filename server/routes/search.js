@@ -1,7 +1,12 @@
 const express = require("express");
-const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
+const { loginRequired, ensureCorrectUser } = require("../middleware/auth");
 const router = express.Router();
-const {searchTopPosts, searchAllPosts, searchTopUsers, searchAllUsers} = require("../handlers/search");
+const {
+    searchTopPosts,
+    searchAllPosts,
+    searchTopUsers,
+    searchAllUsers,
+} = require("../controllers/search");
 
 router.get("/topPosts", searchTopPosts);
 router.get("/allPosts", searchAllPosts);
