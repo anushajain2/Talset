@@ -356,6 +356,48 @@ exports.fileDirectUploadMiddlewareS3 = async function (req, res, next) {
     }
 };
 
+exports.uploadFrontend = async function (req, res, next) {
+    try {
+        let date = new Date();
+        console.log("date");
+        let options = [];
+        if (req.body.option1) await options.push(req.body.option1);
+        if (req.body.option2) await options.push(req.body.option2);
+        if (req.body.option3) await options.push(req.body.option3);
+        if (req.body.option4) await options.push(req.body.option4);
+        let post = await Post.create({
+            by: req.params.id,
+            postUrl: req.body.url,
+            timestamp: {
+                date: date.getDate(),
+                month: date.getMonth(),
+                year: date.getFullYear(),
+                hours: date.getHours(),
+                mins: date.getMinutes(),
+                secs: date.getSeconds(),
+            },
+            skill: {
+                skillName: req.body.skillName,
+                skillLearnt: req.body.skillLearnt,
+            },
+            question: {
+                title: req.body.questionTitle,
+                options: options,
+                correctAnswer: options[req.body.answer - 1],
+            },
+        });
+        let { id } = post;
+        await User.findByIdAndUpdate(req.params.id, {
+            $push: { uploadedPosts: id },
+        });
+        return res.status(200).json({
+            post,
+        });
+    } catch (e) {
+        return next(e);
+    }
+}
+
 exports.uploadS3 = async function (req, res, next) {
     try {
         await uploadFile(req.file.filename, req.file.path);
