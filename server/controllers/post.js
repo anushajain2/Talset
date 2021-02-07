@@ -141,3 +141,15 @@ exports.trendingPosts = async function (req, res, next) {
         return next(e);
     }
 };
+
+exports.viewPost = async function (req, res, next) {
+    try {
+        Post.findByIdAndUpdate(req.params.postid, {$inc:{views: 1}}, {returnOriginal: false}, (err, doc) => {
+            if (err)
+                return next(err);
+            return res.status(200).json(doc);
+        });
+    } catch (e) {
+        return next(e);
+    }
+}

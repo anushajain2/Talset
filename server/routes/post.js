@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const {fileUploadMiddleware,fileDirectUploadMiddleware} = require("../middleware/upload");
 const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
-const {getAllPosts, getUserPosts, likePosts, trendingPosts} = require("../controllers/post");
+const {getAllPosts, getUserPosts, likePosts, trendingPosts, viewPost} = require("../controllers/post");
 const {uploadS3, fileUploadMiddlewareS3,fileDirectUploadMiddlewareS3, uploadFrontend} =require("../middleware/uploadS3");
 
 const storage = multer.diskStorage({
@@ -29,6 +29,7 @@ router.get("/all", getAllPosts);// getting  skills // questions // username also
 router.get("/userPosts/:id", getUserPosts);
 router.post("/like/:id/:postid", loginRequired, ensureCorrectUser, likePosts);
 router.get("/trending", trendingPosts);
+router.post("/viewPost/:id/:postid", loginRequired, ensureCorrectUser, viewPost);
 
 // like
 // comment
