@@ -112,6 +112,10 @@ exports.fileUploadMiddlewareS3 = async function (req, res, next) {
                                                                     .answer - 1
                                                             ],
                                                     },
+                                                    height:
+                                                        req.body.height || null,
+                                                    width:
+                                                        req.body.width || null,
                                                 });
                                                 let { id } = post;
                                                 await User.findByIdAndUpdate(
@@ -197,6 +201,8 @@ exports.fileUploadMiddlewareS3 = async function (req, res, next) {
                                         correctAnswer:
                                             options[req.body.answer - 1],
                                     },
+                                    height: req.body.height || null,
+                                    width: req.body.width || null,
                                 });
                                 let { id } = post;
                                 await User.findByIdAndUpdate(req.params.id, {
@@ -283,6 +289,8 @@ exports.fileDirectUploadMiddlewareS3 = async function (req, res, next) {
                                 options: options,
                                 correctAnswer: options[req.body.answer - 1],
                             },
+                            height: req.body.height || null,
+                            width: req.body.width || null,
                         });
                         let { id } = post;
                         await User.findByIdAndUpdate(req.params.id, {
@@ -333,6 +341,8 @@ exports.fileDirectUploadMiddlewareS3 = async function (req, res, next) {
                                 options: options,
                                 correctAnswer: options[req.body.answer - 1],
                             },
+                            height: req.body.height || null,
+                            width: req.body.width || null,
                         });
                         let { id } = post;
                         await User.findByIdAndUpdate(req.params.id, {
@@ -385,6 +395,8 @@ exports.uploadFrontend = async function (req, res, next) {
                 options: options,
                 correctAnswer: options[req.body.answer - 1],
             },
+            height: req.body.height || null,
+            width: req.body.width || null,
         });
         let { id } = post;
         await User.findByIdAndUpdate(req.params.id, {
@@ -396,7 +408,7 @@ exports.uploadFrontend = async function (req, res, next) {
     } catch (e) {
         return next(e);
     }
-}
+};
 
 exports.uploadS3 = async function (req, res, next) {
     try {

@@ -1,31 +1,31 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-    by : {
+    by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: true,
     },
-    views : {
+    views: {
         type: Number,
-        default: 0
+        default: 0,
     },
-    likes : [
+    likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-        }
+        },
     ],
-    likesTime : [
+    likesTime: [
         {
-            type: Number
-        }
+            type: Number,
+        },
     ],
-    comments : [
+    comments: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Comment"
-        }
+            ref: "Comment",
+        },
         // replies
         // liking comment
         // day and time
@@ -39,53 +39,59 @@ const postSchema = new mongoose.Schema({
         // skill learnt - post and user
         // question -> title, options (2 or 4 with 1 correct) -> creating and getting post
     ],
-    timestamp : {
-        date : {
-            type : Number
+    timestamp: {
+        date: {
+            type: Number,
         },
-        month : {
-            type : Number
+        month: {
+            type: Number,
         },
-        year : {
-            type : Number
+        year: {
+            type: Number,
         },
-        hours : {
-            type : Number
+        hours: {
+            type: Number,
         },
-        mins : {
-            type : Number
+        mins: {
+            type: Number,
         },
-        secs : {
-            type : Number
-        }
+        secs: {
+            type: Number,
+        },
     },
-    skill : {
-        skillName : {
-            type: String
+    skill: {
+        skillName: {
+            type: String,
         },
-        skillLearnt : {
-            type: String
-        }
+        skillLearnt: {
+            type: String,
+        },
     },
 
     postUrl: [
         {
-            type: String
-        }
-    ],
-    question : {
-        title : {
-            type: String
+            type: String,
         },
-        options : [
+    ],
+    question: {
+        title: {
+            type: String,
+        },
+        options: [
             {
-                type: String
-            }
+                type: String,
+            },
         ],
-        correctAnswer : {
-            type: String
-        }
-    }
+        correctAnswer: {
+            type: String,
+        },
+    },
+    height: {
+        type: Number,
+    },
+    width: {
+        type: Number,
+    },
 });
 // video thumbnails
 // search
