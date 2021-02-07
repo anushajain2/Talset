@@ -30,6 +30,19 @@ exports.getAllPosts = async function (req, res, next) {
     }
 };
 
+exports.getPostsById = async function (req, res, next) {
+    try {
+        Post.findById(req.params.postid, (err, doc) => {
+            if (err) {
+               return next(err);
+            } 
+            return res.status(200).json(doc);
+        });
+    } catch (e) {
+        return next(e);
+    }
+}
+
 exports.getUserPosts = async function (req, res, next) {
     try {
         await Post.find({ by: req.params.id }, function (err, docs) {
