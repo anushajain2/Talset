@@ -10,18 +10,32 @@ exports.getAllPosts = async function (req, res, next) {
                 return next(err);
             }
             Post.find()
-                .populate("by", "username")
+                .populate({ path: "by", select: ["username", "name"] })
                 .lean()
                 .exec(async function (err, docs) {
+                    const user = await User.findById(decoded.id);
+                    function checkView(doc) {
+                        function checkIfAlreadyViewed(postId) {
+                            return String(postId.valueOf()) === String(doc._id.valueOf());
+                        }
+                        let ifFound = user.watchedPosts.find(
+                            checkIfAlreadyViewed
+                        );
+                        //console.log(doc._id, ifFound);
+                        if (ifFound === undefined) return true;
+                        else return false;
+                    }
+                    docs = docs.filter(checkView);
                     await docs.forEach(async (doc, index, arr) => {
                         doc.isLiked = false;
                         await doc.likes.forEach((like) => {
-                            console.log("2");
+                            //console.log("2");
                             if (like === decoded.id) {
                                 doc.isLiked = true;
                             }
                         });
                     });
+                    shuffle(docs);
                     return res.status(200).json(docs);
                 });
         });
@@ -34,14 +48,14 @@ exports.getPostsById = async function (req, res, next) {
     try {
         Post.findById(req.params.postid, (err, doc) => {
             if (err) {
-               return next(err);
-            } 
+                return next(err);
+            }
             return res.status(200).json(doc);
         });
     } catch (e) {
         return next(e);
     }
-}
+};
 
 exports.getUserPosts = async function (req, res, next) {
     try {
@@ -157,12 +171,46 @@ exports.trendingPosts = async function (req, res, next) {
 
 exports.viewPost = async function (req, res, next) {
     try {
-        Post.findByIdAndUpdate(req.params.postid, {$inc:{views: 1}}, {returnOriginal: false}, (err, doc) => {
-            if (err)
-                return next(err);
-            return res.status(200).json(doc);
-        });
+        Post.findByIdAndUpdate(
+            req.params.postid,
+            { $inc: { views: 1 } },
+            { returnOriginal: false },
+            (err, doc) => {
+                if (err) return next(err);
+                User.findByIdAndUpdate(
+                    req.params.id,
+                    {
+                        $push: { watchedPosts: req.params.postid },
+                    },
+                    (errr, docs) => {
+                        if (errr) return next(errr);
+                        return res.status(200).json(doc);
+                    }
+                );
+                // Todo
+            }
+        );
     } catch (e) {
         return next(e);
     }
+};
+
+function shuffle(array) {
+    var currentIndex = array.length,
+        temporaryValue,
+        randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
 }

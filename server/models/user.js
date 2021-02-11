@@ -25,11 +25,11 @@ const userSchema = new mongoose.Schema({
     },
     currentWork : {
         type: String,
-        default: "Mention your Work Place Here"
+        default: ""
     },
     bio :{
         type: String,
-        default: "Tell More About Yourself Here"
+        default: ""
     },
     learningMins : {
         type: Number,
