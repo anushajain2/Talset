@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const {fileUploadMiddleware,fileDirectUploadMiddleware} = require("../middleware/upload");
 const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
 const {getAllPosts, getUserPosts, likePosts, trendingPosts, viewPost, getPostsById} = require("../controllers/post");
 const {uploadS3, fileUploadMiddlewareS3,fileDirectUploadMiddlewareS3, uploadFrontend} =require("../middleware/uploadS3");
@@ -23,8 +22,6 @@ router.post("/uploadS3/:id", loginRequired, ensureCorrectUser, upload.array('fil
 router.post("/directUploadS3/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileDirectUploadMiddlewareS3);
 router.post("/createPost/:id", loginRequired, ensureCorrectUser, uploadFrontend);
 
-router.post("/upload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileUploadMiddleware); //add skill learnt, // questions
-router.post("/directUpload/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileDirectUploadMiddleware);
 router.get("/all", getAllPosts);// getting  skills // questions // username also sending //isliked
 router.get("/getById/:id/:postid", loginRequired, ensureCorrectUser, getPostsById);
 router.get("/userPosts/:id", getUserPosts);
