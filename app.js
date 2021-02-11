@@ -9,15 +9,9 @@ const postRoutes = require("./server/routes/post");
 const commentRoutes = require("./server/routes/comment");
 const skillRoutes = require("./server/routes/skill");
 const searchRoutes = require("./server/routes/search");
-const cloudinary = require("cloudinary").v2;
 
 const app = express();
 
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_KEY,
-    api_secret: process.env.CLOUD_SECRET,
-});
 
 app.use(cors());
 
