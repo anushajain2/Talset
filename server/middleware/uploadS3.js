@@ -368,6 +368,8 @@ exports.fileDirectUploadMiddlewareS3 = async function (req, res, next) {
 
 exports.uploadFrontend = async function (req, res, next) {
     try {
+        if (req.body.skillName === undefined || req.body.skillLearnt === undefined)
+            return next({ message:"No skillname or skilllearnt"});
         let date = new Date();
         console.log("date");
         let options = [];
