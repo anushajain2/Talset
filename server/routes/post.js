@@ -1,14 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const {loginRequired, ensureCorrectUser} = require("../middleware/auth");
-const {getAllPosts, getUserPosts, likePosts, trendingPosts, viewPost, getPostsById} = require("../controllers/post");
-const {uploadS3, fileUploadMiddlewareS3,fileDirectUploadMiddlewareS3, uploadFrontend} =require("../middleware/uploadS3");
+const { loginRequired, ensureCorrectUser } = require("../middleware/auth");
+const {
+    getAllPosts,
+    getUserPosts,
+    getUserPostsSpecific,
+    likePosts,
+    trendingPosts,
+    viewPost,
+    getPostsById,
+} = require("../controllers/post");
+const {
+    uploadS3,
+    fileUploadMiddlewareS3,
+    fileDirectUploadMiddlewareS3,
+    uploadFrontend,
+} = require("../middleware/uploadS3");
 
 const storage = multer.diskStorage({
-    destination: './files',
+    destination: "./files",
     filename(req, file, cb) {
-        let newName = Date.now()+ '-' +file.originalname;
+        let newName = Date.now() + "-" + file.originalname;
         newName = newName.split(" ").join("_");
         cb(null, newName);
     },
@@ -18,16 +31,44 @@ const upload = multer({ storage });
 
 // S3
 // router.post("/uploadS3/:id", loginRequired, ensureCorrectUser, upload.single('file'), uploadS3);
-router.post("/uploadS3/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileUploadMiddlewareS3); //add skill learnt, // questions
-router.post("/directUploadS3/:id", loginRequired, ensureCorrectUser, upload.array('files', 5), fileDirectUploadMiddlewareS3);
-router.post("/createPost/:id", loginRequired, ensureCorrectUser, uploadFrontend);
+router.post(
+    "/uploadS3/:id",
+    loginRequired,
+    ensureCorrectUser,
+    upload.array("files", 5),
+    fileUploadMiddlewareS3
+); //add skill learnt, // questions
+router.post(
+    "/directUploadS3/:id",
+    loginRequired,
+    ensureCorrectUser,
+    upload.array("files", 5),
+    fileDirectUploadMiddlewareS3
+);
+router.post(
+    "/createPost/:id",
+    loginRequired,
+    ensureCorrectUser,
+    uploadFrontend
+);
 
-router.get("/all", getAllPosts);// getting  skills // questions // username also sending //isliked
-router.get("/getById/:id/:postid", loginRequired, ensureCorrectUser, getPostsById);
+router.get("/all", getAllPosts); // getting  skills // questions // username also sending //isliked
+router.get(
+    "/getById/:id/:postid",
+    loginRequired,
+    ensureCorrectUser,
+    getPostsById
+);
 router.get("/userPosts/:id", getUserPosts);
+router.get("/userPostsWithPostId/:id/:postid", getUserPostsSpecific);
 router.post("/like/:id/:postid", loginRequired, ensureCorrectUser, likePosts);
 router.get("/trending", trendingPosts);
-router.post("/viewPost/:id/:postid", loginRequired, ensureCorrectUser, viewPost);
+router.post(
+    "/viewPost/:id/:postid",
+    loginRequired,
+    ensureCorrectUser,
+    viewPost
+);
 
 // like
 // comment

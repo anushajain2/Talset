@@ -28,12 +28,24 @@ exports.getAllPosts = async function (req, res, next) {
                     docs = docs.filter(checkView);
                     await docs.forEach(async (doc, index, arr) => {
                         doc.isLiked = false;
-                        await doc.likes.forEach((like) => {
+                        doc.isFollowing = false;
+                        await doc.likes.forEach( (like) => {
                             //console.log("2");
                             if (like === decoded.id) {
                                 doc.isLiked = true;
                             }
+                            
                         });
+                        //console.log(user);
+                        await user.following.forEach((follow) => {
+                            if (
+                                String(follow.valueOf()) ===
+                                String(doc.by._id.valueOf())
+                            ) {
+                                doc.isFollowing = true;
+                            }
+                        });
+                        
                     });
                     shuffle(docs);
                     return res.status(200).json(docs);
@@ -62,6 +74,16 @@ exports.getUserPosts = async function (req, res, next) {
         await Post.find({ by: req.params.id }, function (err, docs) {
             return res.status(200).json(docs);
         });
+    } catch (e) {
+        return next(e);
+    }
+};
+
+exports.getUserPostsSpecific = async function (req, res, next) {
+    try {
+        const specificDoc = await Post.findById(req.params.postid);
+        const docs = await Post.find({ _id: { $ne: req.params.postid }, by: req.params.id });
+        return res.status(200).json({ specificDoc, docs });
     } catch (e) {
         return next(e);
     }
