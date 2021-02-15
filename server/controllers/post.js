@@ -83,7 +83,7 @@ exports.getUserPostsSpecific = async function (req, res, next) {
     try {
         const specificDoc = await Post.findById(req.params.postid);
         const docs = await Post.find({ _id: { $ne: req.params.postid }, by: req.params.id });
-        return res.status(200).json({ specificDoc, docs });
+        return res.status(200).json([specificDoc, ...docs]);
     } catch (e) {
         return next(e);
     }
@@ -91,6 +91,7 @@ exports.getUserPostsSpecific = async function (req, res, next) {
 
 exports.likePosts = async function (req, res, next) {
     try {
+        
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, process.env.SECRET_KEY, function (err, decoded) {
             if (err) {
@@ -108,8 +109,10 @@ exports.likePosts = async function (req, res, next) {
                     Post.findByIdAndUpdate(
                         req.params.postid,
                         {
-                            $push: { likes: decoded.id },
-                            $push: { likesTime: Date.now() / 1000 },
+                            $push: {
+                                likes: decoded.id,
+                                likesTime: Date.now() / 1000,
+                            }
                         },
                         { returnOriginal: false },
                         function (e, docs) {
@@ -124,9 +127,23 @@ exports.likePosts = async function (req, res, next) {
                         }
                     );
                 } else {
-                    return next({
-                        message: "Already Liked",
-                    });
+                    Post.findByIdAndUpdate(
+                        req.params.postid,
+                        {
+                            $pull: { likes: decoded.id }
+                        },
+                        { returnOriginal: false },
+                        function (e, docs) {
+                            if (e) {
+                                return next(e);
+                            }
+                            return res.status(200).json({
+                                likes: docs.likes,
+                                number: docs.likes.length,
+                            });
+                            // return count too
+                        }
+                    );
                 }
             });
         });

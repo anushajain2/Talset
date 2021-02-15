@@ -91,24 +91,51 @@ exports.watchLater = async function (req, res, next) {
 
 exports.follow = async function (req, res, next) {
     try {
-        User.findByIdAndUpdate(
-            req.params.id,
-            { $push: { following: req.params.followid } },
-            { returnOriginal: false },
-            function (err, doc) {
-                User.findByIdAndUpdate(
-                    req.params.followid,
-                    {
-                        $push: { followers: req.params.id },
-                        $inc: { noOfFollowers: 1 },
-                    },
-                    { returnOriginal: false },
-                    function (err2, doc2) {
-                        return res.status(200).json(doc);
-                    }
-                );
-            }
-        );
+        const user = await User.findById(req.params.id);
+        function checkIfAlreadyThere(followid) {
+            return String(followid.valueOf()) === req.params.followid;
+        }
+        let ifFound = await user.following.find(checkIfAlreadyThere);
+        if (ifFound === undefined) {
+            User.findByIdAndUpdate(
+                req.params.id,
+                { $push: { following: req.params.followid } },
+                { returnOriginal: false },
+                function (err, doc) {
+                    User.findByIdAndUpdate(
+                        req.params.followid,
+                        {
+                            $push: { followers: req.params.id },
+                            $inc: { noOfFollowers: 1 },
+                        },
+                        { returnOriginal: false },
+                        function (err2, doc2) {
+                            return res.status(200).json(doc);
+                        }
+                    );
+                }
+            );
+        }
+        else {
+            User.findByIdAndUpdate(
+                req.params.id,
+                { $pull: { following: req.params.followid } },
+                { returnOriginal: false },
+                function (err, doc) {
+                    User.findByIdAndUpdate(
+                        req.params.followid,
+                        {
+                            $pull: { followers: req.params.id },
+                            $dec: { noOfFollowers: 1 },
+                        },
+                        { returnOriginal: false },
+                        function (err2, doc2) {
+                            return res.status(200).json(doc);
+                        }
+                    );
+                }
+            );
+        }
     } catch (e) {
         return next(e);
     }

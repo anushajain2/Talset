@@ -417,7 +417,10 @@ exports.uploadS3 = async function (req, res, next) {
         await uploadFile(req.file.filename, req.file.path);
         let urlResponse = process.env.CLOUDFRONT_URL + req.file.filename;
         fs.unlinkSync(req.file.path);
-        return res.status(200).json({ url:urlResponse });
+        User.findByIdAndUpdate(req.params.id, { profilePic: urlResponse }, function (err, doc) {
+            return res.status(200).json({ url: urlResponse });
+        });
+        
     } catch (e) {
         fs.unlinkSync(req.file.path);
         return next(e);
