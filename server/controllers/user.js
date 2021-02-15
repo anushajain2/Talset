@@ -26,11 +26,10 @@ exports.editUser = async function (req, res, next) {
         ) {
             let newUser = await User.findById(req.params.id);
             //, {name:req.body.name, currentWork:req.body.currentWork, bio: req.body.bio}
-            if (req.body.name !== "") newUser.name = req.body.name;
-            if (req.body.currentWork !== "")
-                newUser.currentWork = req.body.currentWork;
-            if (req.body.bio !== "") newUser.bio = req.body.bio;
-            if (req.body.url !== "") newUser.profilePic = req.body.url;
+            newUser.name = req.body.name;
+            newUser.currentWork = req.body.currentWork;
+            newUser.bio = req.body.bio;
+            newUser.profilePic = req.body.url;
             await newUser.save();
             let user = await User.findById(req.params.id).select(
                 "-password -watchedPosts -bookmarks -watchLater -inProgressPosts"
@@ -115,8 +114,7 @@ exports.follow = async function (req, res, next) {
                     );
                 }
             );
-        }
-        else {
+        } else {
             User.findByIdAndUpdate(
                 req.params.id,
                 { $pull: { following: req.params.followid } },
