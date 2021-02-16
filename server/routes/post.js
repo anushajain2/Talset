@@ -10,6 +10,7 @@ const {
     trendingPosts,
     viewPost,
     getPostsById,
+    incShare
 } = require("../controllers/post");
 const {
     uploadS3,
@@ -69,6 +70,7 @@ router.post(
     ensureCorrectUser,
     viewPost
 );
+router.post("/share/:id/:postid", loginRequired, ensureCorrectUser, incShare);
 
 // like
 // comment

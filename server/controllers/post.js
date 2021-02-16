@@ -16,7 +16,10 @@ exports.getAllPosts = async function (req, res, next) {
                     const user = await User.findById(decoded.id);
                     function checkView(doc) {
                         function checkIfAlreadyViewed(postId) {
-                            return String(postId.valueOf()) === String(doc._id.valueOf());
+                            return (
+                                String(postId.valueOf()) ===
+                                String(doc._id.valueOf())
+                            );
                         }
                         let ifFound = user.watchedPosts.find(
                             checkIfAlreadyViewed
@@ -29,12 +32,11 @@ exports.getAllPosts = async function (req, res, next) {
                     await docs.forEach(async (doc, index, arr) => {
                         doc.isLiked = false;
                         doc.isFollowing = false;
-                        await doc.likes.forEach( (like) => {
+                        await doc.likes.forEach((like) => {
                             //console.log("2");
                             if (like === decoded.id) {
                                 doc.isLiked = true;
                             }
-                            
                         });
                         //console.log(user);
                         await user.following.forEach((follow) => {
@@ -45,7 +47,6 @@ exports.getAllPosts = async function (req, res, next) {
                                 doc.isFollowing = true;
                             }
                         });
-                        
                     });
                     shuffle(docs);
                     return res.status(200).json(docs);
@@ -82,7 +83,10 @@ exports.getUserPosts = async function (req, res, next) {
 exports.getUserPostsSpecific = async function (req, res, next) {
     try {
         const specificDoc = await Post.findById(req.params.postid);
-        const docs = await Post.find({ _id: { $ne: req.params.postid }, by: req.params.id });
+        const docs = await Post.find({
+            _id: { $ne: req.params.postid },
+            by: req.params.id,
+        });
         return res.status(200).json([specificDoc, ...docs]);
     } catch (e) {
         return next(e);
@@ -91,7 +95,6 @@ exports.getUserPostsSpecific = async function (req, res, next) {
 
 exports.likePosts = async function (req, res, next) {
     try {
-        
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, process.env.SECRET_KEY, function (err, decoded) {
             if (err) {
@@ -112,7 +115,7 @@ exports.likePosts = async function (req, res, next) {
                             $push: {
                                 likes: decoded.id,
                                 likesTime: Date.now() / 1000,
-                            }
+                            },
                         },
                         { returnOriginal: false },
                         function (e, docs) {
@@ -130,7 +133,7 @@ exports.likePosts = async function (req, res, next) {
                     Post.findByIdAndUpdate(
                         req.params.postid,
                         {
-                            $pull: { likes: decoded.id }
+                            $pull: { likes: decoded.id },
                         },
                         { returnOriginal: false },
                         function (e, docs) {
@@ -227,6 +230,21 @@ exports.viewPost = async function (req, res, next) {
                     }
                 );
                 // Todo
+            }
+        );
+    } catch (e) {
+        return next(e);
+    }
+};
+
+exports.incShare = function (req, res, next) {
+    try {
+        Post.findByIdAndUpdate(
+            req.params.postid,
+            { $inc: { shares: 1 }  },
+            { returnOriginal: false },
+            (err, doc) => {
+                return res.status(200).json(doc);
             }
         );
     } catch (e) {

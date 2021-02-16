@@ -6,12 +6,18 @@ exports.getUser = async function (req, res, next) {
         let user = await User.findById(req.params.id).select(
             "-password -watchedPosts -bookmarks -watchLater -inProgressPosts"
         );
+        // console.log(user.skill[0].skillLearnt.length);
         let postsCount = user.uploadedPosts.length;
         let followersCount = user.followers.length;
+        let concepts = 0;
+        user.skill.forEach((skill) => {
+            concepts += skill.skillLearnt.length; 
+        });
         return res.status(200).json({
             user,
             postsCount,
             followersCount,
+            concepts
         });
     } catch (e) {
         return next({ message: "Invalid User Id" });

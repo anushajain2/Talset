@@ -95,6 +95,10 @@ const postSchema = new mongoose.Schema({
     width: {
         type: Number,
     },
+    shares: {
+        type: Number,
+        default:0
+    }
 });
 // video thumbnails
 // search
