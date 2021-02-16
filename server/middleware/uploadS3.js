@@ -53,7 +53,7 @@ exports.fileUploadMiddlewareS3 = async function (req, res, next) {
                                             console.log("in");
 
                                             await links.push(
-                                                "https://d2mimyecy1zro1.cloudfront.net/" +
+                                                "https://d20mmaev9utzdi.cloudfront.net/" +
                                                     `${newName}.mp4`
                                             );
                                             fs.unlinkSync(file);
