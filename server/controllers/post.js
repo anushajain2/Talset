@@ -82,11 +82,11 @@ exports.getUserPosts = async function (req, res, next) {
 
 exports.getUserPostsSpecific = async function (req, res, next) {
     try {
-        const specificDoc = await Post.findById(req.params.postid);
+        const specificDoc = await Post.findById(req.params.postid).populate({ path: "by", select: ["username", "name"] });
         const docs = await Post.find({
             _id: { $ne: req.params.postid },
             by: req.params.id,
-        });
+        }).populate({ path: "by", select: ["username", "name"] });
         return res.status(200).json([specificDoc, ...docs]);
     } catch (e) {
         return next(e);
