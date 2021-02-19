@@ -9,7 +9,7 @@ exports.getAllPosts = async function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            Post.find()
+            Post.find({ _id: { $ne: "602e436ab6234c9749e81b3e" } })
                 .populate({ path: "by", select: ["username", "name"] })
                 .lean()
                 .exec(async function (err, docs) {
@@ -28,7 +28,7 @@ exports.getAllPosts = async function (req, res, next) {
                         if (ifFound === undefined) return true;
                         else return false;
                     }
-                    docs = docs.filter(checkView);
+
                     await docs.forEach(async (doc, index, arr) => {
                         doc.isLiked = false;
                         doc.isFollowing = false;
@@ -48,8 +48,15 @@ exports.getAllPosts = async function (req, res, next) {
                             }
                         });
                     });
-                    shuffle(docs);
-                    return res.status(200).json(docs);
+                    let docsNotViewed = await docs.filter(checkView);
+                    if (docsNotViewed.length === 0) {
+                        return res.status(200).json(docs);
+                    }
+                    let postView = await Post.findById("602e436ab6234c9749e81b3e");
+                    shuffle(docsNotViewed);
+                    docsNotViewed.push(postView);
+                    docsNotViewed.push(...docs);
+                    return res.status(200).json(docsNotViewed);
                 });
         });
     } catch (e) {
