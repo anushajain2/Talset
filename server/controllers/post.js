@@ -9,7 +9,7 @@ exports.getAllPosts = async function (req, res, next) {
             if (err) {
                 return next(err);
             }
-            Post.find({ _id: { $ne: "602e436ab6234c9749e81b3e" } })
+            Post.find({ _id: { $ne: "603682af4e7abdd0376b2161" } })
                 .populate({ path: "by", select: ["username", "name"] })
                 .lean()
                 .exec(async function (err, docs) {
@@ -52,7 +52,9 @@ exports.getAllPosts = async function (req, res, next) {
                     if (docsNotViewed.length === 0) {
                         return res.status(200).json(docs);
                     }
-                    let postView = await Post.findById("602e436ab6234c9749e81b3e");
+                    let postView = await Post.findById(
+                        "603682af4e7abdd0376b2161"
+                    );
                     shuffle(docsNotViewed);
                     docsNotViewed.push(postView);
                     docsNotViewed.push(...docs);
