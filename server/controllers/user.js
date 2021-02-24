@@ -35,7 +35,6 @@ exports.editUser = async function (req, res, next) {
             newUser.name = req.body.name;
             newUser.currentWork = req.body.currentWork;
             newUser.bio = req.body.bio;
-            newUser.profilePic = req.body.url;
             await newUser.save();
             let user = await User.findById(req.params.id).select(
                 "-password -watchedPosts -bookmarks -watchLater -inProgressPosts"
