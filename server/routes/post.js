@@ -10,13 +10,14 @@ const {
     trendingPosts,
     viewPost,
     getPostsById,
-    incShare
+    incShare,video
 } = require("../controllers/post");
 const {
     uploadS3,
     fileUploadMiddlewareS3,
     fileDirectUploadMiddlewareS3,
     uploadFrontend,
+    newUpload
 } = require("../middleware/uploadS3");
 
 const storage = multer.diskStorage({
@@ -24,11 +25,16 @@ const storage = multer.diskStorage({
     filename(req, file, cb) {
         let newName = Date.now() + "-" + file.originalname;
         newName = newName.split(" ").join("_");
+        console.log("in multer");
         cb(null, newName);
     },
 });
 
 const upload = multer({ storage });
+
+var memoryStorage = multer.memoryStorage();
+var form = multer({ storage: memoryStorage });
+router.post("/newuploadS3", form.single("files"), newUpload);
 
 // S3
 // router.post("/uploadS3/:id", loginRequired, ensureCorrectUser, upload.single('file'), uploadS3);
@@ -43,8 +49,8 @@ router.post(
     "/directUploadS3/:id",
     loginRequired,
     ensureCorrectUser,
-    upload.array("files", 5),
-    fileDirectUploadMiddlewareS3
+    form.single("files"),
+    newUpload
 );
 router.post(
     "/createPost/:id",
@@ -71,6 +77,7 @@ router.post(
     viewPost
 );
 router.post("/share/:id/:postid", loginRequired, ensureCorrectUser, incShare);
+router.get("/video/:id", video);
 
 // like
 // comment

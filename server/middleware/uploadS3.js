@@ -251,6 +251,7 @@ exports.fileDirectUploadMiddlewareS3 = async function (req, res, next) {
         try {
             for (let i = 0; i < req.files.length; i++) {
                 if (isVideo(req.files[i].path)) {
+                    console.log("hi");
                     await uploadFile(req.files[i].filename, req.files[i].path);
                     console.log("in");
                     await links.push(
@@ -368,8 +369,11 @@ exports.fileDirectUploadMiddlewareS3 = async function (req, res, next) {
 
 exports.uploadFrontend = async function (req, res, next) {
     try {
-        if (req.body.skillName === undefined || req.body.skillLearnt === undefined)
-            return next({ message:"No skillname or skilllearnt"});
+        if (
+            req.body.skillName === undefined ||
+            req.body.skillLearnt === undefined
+        )
+            return next({ message: "No skillname or skilllearnt" });
         let date = new Date();
         console.log("date");
         let options = [];
@@ -412,15 +416,86 @@ exports.uploadFrontend = async function (req, res, next) {
     }
 };
 
+exports.newUpload = async function (req, res, next) {
+    if (!req.file) return next({ msg: "upload failed" });
+    if (!isVideo(req.file.originalname) && !isImage(req.file.originalname)) {
+        return next({ msg: "unknown file type" });
+    }
+    try {
+        awsSDK.config.update({
+            accessKeyId: process.env.S3_ACCESS_KEY_ID,
+            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        });
+        const s3 = new awsSDK.S3();
+        let newName = Date.now() + "-" + req.file.originalname;
+        newName = newName.split(" ").join("_");
+        console.log("pre");
+        s3.putObject(
+            {
+                Bucket: "" + process.env.S3_BUCKET_NAME,
+                Key: newName,
+                Body: req.file.buffer,
+                ContentType: req.file.mimetype,
+                ACL: "public-read",
+            },
+            async function (err, data) {
+                if (err) return next(err);
+                let date = new Date();
+                console.log("date");
+                let options = [];
+                if (req.body.option1) options.push(req.body.option1);
+                if (req.body.option2) options.push(req.body.option2);
+                if (req.body.option3) options.push(req.body.option3);
+                if (req.body.option4) options.push(req.body.option4);
+                let post = await Post.create({
+                    by: req.params.id,
+                    postUrl: [process.env.CLOUDFRONT_URL + newName],
+                    timestamp: {
+                        date: date.getDate(),
+                        month: date.getMonth(),
+                        year: date.getFullYear(),
+                        hours: date.getHours(),
+                        mins: date.getMinutes(),
+                        secs: date.getSeconds(),
+                    },
+                    skill: {
+                        skillName: req.body.skillName,
+                        skillLearnt: req.body.skillLearnt,
+                    },
+                    question: {
+                        title: req.body.questionTitle,
+                        options: options,
+                        correctAnswer: options[req.body.answer - 1],
+                    },
+                    height: req.body.height || null,
+                    width: req.body.width || null,
+                });
+                let { id } = post;
+                await User.findByIdAndUpdate(req.params.id, {
+                    $push: { uploadedPosts: id },
+                });
+                return res.status(200).json({
+                    post,
+                });
+            }
+        );
+    } catch (e) {
+        return next(e);
+    }
+};
+
 exports.uploadS3 = async function (req, res, next) {
     try {
         await uploadFile(req.file.filename, req.file.path);
         let urlResponse = process.env.CLOUDFRONT_URL + req.file.filename;
         fs.unlinkSync(req.file.path);
-        User.findByIdAndUpdate(req.params.id, { profilePic: urlResponse }, function (err, doc) {
-            return res.status(200).json({ url: urlResponse });
-        });
-        
+        User.findByIdAndUpdate(
+            req.params.id,
+            { profilePic: urlResponse },
+            function (err, doc) {
+                return res.status(200).json({ url: urlResponse });
+            }
+        );
     } catch (e) {
         fs.unlinkSync(req.file.path);
         return next(e);

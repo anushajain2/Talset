@@ -1,6 +1,103 @@
 const User = require("../config/db").User;
 const Post = require("../config/db").Post;
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const awsSDK = require("aws-sdk");
+const mime = require("mime-types");
+
+exports.video = async function (req, res, next) {
+    const post = await Post.findById(req.params.id);
+    const splits = post.postUrl[0].split("/");
+    const file = splits[splits.length - 1];
+    awsSDK.config.update({
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    });
+    const s3 = new awsSDK.S3();
+    s3.listObjectsV2(
+        {
+            Bucket: "" + process.env.S3_BUCKET_NAME,
+            MaxKeys: 1,
+            Prefix: file,
+        },
+        function (err, data) {
+             if (err) {
+                 return res.sendStatus(404);
+             }
+            //console.log(data);
+            var mimetype = mime.lookup(file);
+            console.log(req.headers.range);
+
+             if (req != null && req.headers.range != null) {
+                 var range = req.headers.range;
+                 var bytes = range.replace(/bytes=/, "").split("-");
+                 var start = parseInt(bytes[0], 10);
+
+                 var total = data.Contents[0].Size;
+                 var end = bytes[1] ? parseInt(bytes[1], 10) : total - 1;
+                 var chunksize = end - start + 1;
+                 
+
+                 res.writeHead(206, {
+                     "Content-Range":
+                         "bytes " + start + "-" + end + "/" + total,
+                     "Accept-Ranges": "bytes",
+                     "Content-Length": chunksize,
+                     "Last-Modified": data.Contents[0].LastModified,
+                     "Content-Type": mimetype,
+                 });
+
+                 s3.getObject({
+                     Bucket: "" + process.env.S3_BUCKET_NAME,
+                     Key: file,
+                     Range: range,
+                 })
+                     .createReadStream()
+                     .pipe(res);
+             } else {
+                 res.writeHead(200, {
+                    //  "Cache-Control": "max-age=" + cache + ", private",
+                     "Content-Length": data.Contents[0].Size,
+                     "Last-Modified": data.Contents[0].LastModified,
+                     "Content-Type": mimetype,
+                 });
+                 s3.getObject({
+                     Bucket: "" + process.env.S3_BUCKET_NAME,
+                     Key: file,
+                 })
+                     .createReadStream()
+                     .pipe(res);
+             }
+        }
+    );
+    //console.log(filename);
+    // const path = new URL("/",post.postUrl[0]);
+    // const stat = fs.statSync(path);
+    // const fileSize = stat.size;
+    // const range = req.headers.range;
+    // if (range) {
+    //     const parts = range.replace(/bytes=/, "").split("-");
+    //     const start = parseInt(parts[0], 10);
+    //     const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+    //     const chunksize = end - start + 1;
+    //     const file = fs.createReadStream(path, { start, end });
+    //     const head = {
+    //         "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+    //         "Accept-Ranges": "bytes",
+    //         "Content-Length": chunksize,
+    //         "Content-Type": "video/mp4",
+    //     };
+    //     res.writeHead(206, head);
+    //     file.pipe(res);
+    // } else {
+    //     const head = {
+    //         "Content-Length": fileSize,
+    //         "Content-Type": "video/mp4",
+    //     };
+    //     res.writeHead(200, head);
+    //     fs.createReadStream(path).pipe(res);
+    // }
+}
 
 exports.getAllPosts = async function (req, res, next) {
     try {
